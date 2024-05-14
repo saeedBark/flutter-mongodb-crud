@@ -1,5 +1,6 @@
 import 'package:contacts_app/item_model.dart';
 import 'package:contacts_app/item_service.dart';
+import 'package:contacts_app/main.dart';
 import 'package:flutter/material.dart';
 
 class ItemController extends ChangeNotifier {
@@ -16,15 +17,14 @@ class ItemController extends ChangeNotifier {
     getItems();
   }
 
- Future<void> getItem(String id) async {
+  Future<void> getItem(String id) async {
     isLoading = true;
 
-    
     final item = await _service.getItem(id);
-     
-     nameController.text = item['name'];
-     descriptionController.text = item['description'];
-     quantityController.text = item['qty'].toString();
+
+    nameController.text = item['name'];
+    descriptionController.text = item['description'];
+    quantityController.text = item['qty'].toString();
     isLoading = false;
     notifyListeners();
   }
@@ -49,7 +49,7 @@ class ItemController extends ChangeNotifier {
       isLoading = true;
       notifyListeners();
 
-            Navigator.of(context).pop();
+      Navigator.of(context).pop();
 
       await _service.addItem(
         nameController.text,
@@ -72,24 +72,32 @@ class ItemController extends ChangeNotifier {
     }
   }
 
-  // Future<void> updateItem(String id, String newName, String newDetails, int newQty) async {
-  //   try {
-  //     await _service.updateProduct(id, newName, newDetails, newQty);
-  //     final updatedItemIndex = allItems.indexWhere((item) => item.id == id);
-  //     if (updatedItemIndex != -1) {
-  //       allItems[updatedItemIndex] = Item(id: id, name: newName, details: newDetails, qty: newQty);
-  //       notifyListeners();
-  //     }
-  //   } catch (e) {
-  //     print('Error updating item: $e');
-  //   }
-  // }
+  Future<void> updateItem(
+      String id, BuildContext context, ItemController controller) async {
+    try {
+     await getItem(id).then((value) => showDialog(
+            context: context,
+            builder: (BuildContext context) =>
+                AddItemDialog(controller: controller),
+          ));
+
+      // await _service.updateProduct(id, newName, newDetails, newQty);
+      // final updatedItemIndex = allItems.indexWhere((item) => item.id == id);
+      // if (updatedItemIndex != -1) {
+      //   allItems[updatedItemIndex] =
+      //       Item(id: id, name: newName, details: newDetails, qty: newQty);
+      //   notifyListeners();
+     // }
+    } catch (e) {
+      print('Error updating item: $e');
+    }
+  }
 
   Future<void> deleteItem(String id) async {
     try {
       await _service.deleteProduct(id);
       allItems.removeWhere((item) => item.id == id);
-      
+
       notifyListeners();
     } catch (e) {
       print('Error deleting item: $e');

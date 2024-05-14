@@ -18,9 +18,8 @@ class MyApp extends StatelessWidget {
           create: (context) => ItemController(),
         ),
       ],
-      child: MaterialApp(
-        debugShowCheckedModeBanner: false,
-        home: ItemListView()),
+      child:
+          MaterialApp(debugShowCheckedModeBanner: false, home: ItemListView()),
     );
   }
 }
@@ -40,35 +39,36 @@ class _ItemBody extends StatelessWidget {
         primarySwatch: Colors.blue,
       ),
       home: Scaffold(
-          body: Column(
-            children: [
-              ListView.builder(
-                itemCount: controller.allItems.length,
-                itemBuilder: (context, index) => ItemCard(
-                    name: controller.allItems[index].name,
-                    description: controller.allItems[index].details,
-                    quantity: controller.allItems[index].qty,
-                    onUpdate: () {
-                      // Handle update action
-                    },
-                    onRemove: () {
-                      controller.deleteItem(controller.allItems[index].name);
-                    },
-            
-                ),
+        body: Column(
+          children: [
+            ListView.builder(
+              itemCount: controller.allItems.length,
+              itemBuilder: (context, index) => ItemCard(
+                name: controller.allItems[index].name,
+                description: controller.allItems[index].details,
+                quantity: controller.allItems[index].qty,
+                onUpdate: () {
+                  // Handle update action
+                },
+                onRemove: () {
+                  controller.deleteItem(controller.allItems[index].name);
+                },
               ),
-            IconButton(onPressed:() {
-              showDialog(
-                context: context,
-                builder: (context) => AddItemDialog(
-                  controller: controller,
-                ),
-              );
-            }, icon: const Icon(Icons.add),) ,           ],
-          ),
-         
-          ),
-          
+            ),
+            IconButton(
+              onPressed: () {
+                showDialog(
+                  context: context,
+                  builder: (context) => AddItemDialog(
+                    controller: controller,
+                  ),
+                );
+              },
+              icon: const Icon(Icons.add),
+            ),
+          ],
+        ),
+      ),
     );
   }
 }
@@ -108,7 +108,8 @@ class AddItemDialog extends StatelessWidget {
         ),
         ElevatedButton(
           onPressed: () {
-            controller.addProduct(context);
+            controller.updateItem(
+                controller.nameController.text, context, controller);
           },
           child: const Text('Add'),
         ),

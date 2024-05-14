@@ -19,13 +19,9 @@ class ItemListView extends StatelessWidget {
                   name: controller.allItems[index].name,
                   description: controller.allItems[index].details,
                   quantity: controller.allItems[index].qty,
+                  
                   onUpdate: ()  {
-                     controller.getItem(controller.allItems[index].name).then((value) =>  showDialog(
-                      context: context,
-                      builder: (BuildContext context) {
-                        return AddItemDialog(controller: controller);
-                      },
-                    ));
+                     
 
                    
                   },
