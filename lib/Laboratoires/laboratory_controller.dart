@@ -1,10 +1,9 @@
 import 'package:contacts_app/item_model.dart';
-import 'package:contacts_app/item_service.dart';
-import 'package:contacts_app/main.dart';
+import 'package:contacts_app/Laboratoires/laboratory_service.dart';
 import 'package:flutter/material.dart';
 
-class ItemController extends ChangeNotifier {
-  final ItemService _service = ItemService();
+class LaboratroiesController extends ChangeNotifier {
+  final LaboratoriesService _service = LaboratoriesService();
   List<Item> allItems = [];
 
   final TextEditingController nameController = TextEditingController();
@@ -13,13 +12,12 @@ class ItemController extends ChangeNotifier {
 
   bool isLoading = false;
 
-  ItemController() {
+  LaboratroiesController() {
     getItems();
   }
 
   Future<void> getItem(String id) async {
     isLoading = true;
-
     final item = await _service.getItem(id);
 
     nameController.text = item['name'];
@@ -41,6 +39,7 @@ class ItemController extends ChangeNotifier {
             ))
         .toList();
     isLoading = false;
+    print('connect success');
     notifyListeners();
   }
 
@@ -73,21 +72,11 @@ class ItemController extends ChangeNotifier {
   }
 
   Future<void> updateItem(
-      String id, BuildContext context, ItemController controller) async {
+      String id, BuildContext context, LaboratroiesController cont) async {
     try {
-     await getItem(id).then((value) => showDialog(
-            context: context,
-            builder: (BuildContext context) =>
-                AddItemDialog(controller: controller),
-          ));
-
-      // await _service.updateProduct(id, newName, newDetails, newQty);
-      // final updatedItemIndex = allItems.indexWhere((item) => item.id == id);
-      // if (updatedItemIndex != -1) {
-      //   allItems[updatedItemIndex] =
-      //       Item(id: id, name: newName, details: newDetails, qty: newQty);
-      //   notifyListeners();
-     // }
+      await _service.updateItem(nameController.text, descriptionController.text,
+          int.tryParse(quantityController.text) ?? 0);
+      await getItems().then((value) => Navigator.pop(context));
     } catch (e) {
       print('Error updating item: $e');
     }

@@ -1,81 +1,49 @@
+import 'package:contacts_app/Laboratoires/laboratory_controller.dart';
 import 'package:contacts_app/app.dart';
-import 'package:contacts_app/item_controller.dart';
-import 'package:contacts_app/item_view_page.dart';
-import 'package:contacts_app/widget/item.dart';
+import 'package:contacts_app/livres/livres_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 void main() {
-  runApp(MyApp());
+  runApp(MyAppStock());
 }
 
-class MyApp extends StatelessWidget {
+class MyAppStock extends StatelessWidget {
+  const MyAppStock({super.key});
+
   @override
   Widget build(BuildContext context) {
     return MultiProvider(
       providers: [
         ChangeNotifierProvider(
-          create: (context) => ItemController(),
+          create: (context) => LaboratroiesController(),
+        ),
+        ChangeNotifierProvider(
+          create: (context) => LivresController(),
         ),
       ],
-      child:
-          MaterialApp(debugShowCheckedModeBanner: false, home: ItemListView()),
-    );
-  }
-}
-
-class _ItemBody extends StatelessWidget {
-  const _ItemBody({
-    super.key,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    final controller = Provider.of<ItemController>(context);
-    return MaterialApp(
-      title: 'Inventory Management',
-      debugShowCheckedModeBanner: false,
-      theme: ThemeData(
-        primarySwatch: Colors.blue,
-      ),
-      home: Scaffold(
-        body: Column(
-          children: [
-            ListView.builder(
-              itemCount: controller.allItems.length,
-              itemBuilder: (context, index) => ItemCard(
-                name: controller.allItems[index].name,
-                description: controller.allItems[index].details,
-                quantity: controller.allItems[index].qty,
-                onUpdate: () {
-                  // Handle update action
-                },
-                onRemove: () {
-                  controller.deleteItem(controller.allItems[index].name);
-                },
-              ),
-            ),
-            IconButton(
-              onPressed: () {
-                showDialog(
-                  context: context,
-                  builder: (context) => AddItemDialog(
-                    controller: controller,
-                  ),
-                );
-              },
-              icon: const Icon(Icons.add),
-            ),
-          ],
-        ),
+      child: const MaterialApp(
+        debugShowCheckedModeBanner: false,
+        home: GestionStock(),
       ),
     );
   }
 }
 
 class AddItemDialog extends StatelessWidget {
-  final ItemController controller;
-  const AddItemDialog({super.key, required this.controller});
+  final TextEditingController? nameController,
+      descriptionController,
+      quantityController;
+
+  final void Function()? onUpdate;
+
+  const AddItemDialog({
+    super.key,
+    this.nameController,
+    this.descriptionController,
+    this.quantityController,
+    this.onUpdate,
+  });
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
@@ -84,15 +52,15 @@ class AddItemDialog extends StatelessWidget {
         mainAxisSize: MainAxisSize.min,
         children: [
           TextField(
-            controller: controller.nameController,
+            controller: nameController,
             decoration: const InputDecoration(labelText: 'Name'),
           ),
           TextField(
-            controller: controller.descriptionController,
+            controller: descriptionController,
             decoration: const InputDecoration(labelText: 'Description'),
           ),
           TextField(
-            controller: controller.quantityController,
+            controller: quantityController,
             decoration: const InputDecoration(labelText: 'Quantity'),
             keyboardType: TextInputType.number,
           ),
@@ -107,10 +75,7 @@ class AddItemDialog extends StatelessWidget {
           child: const Text('Cancel'),
         ),
         ElevatedButton(
-          onPressed: () {
-            controller.updateItem(
-                controller.nameController.text, context, controller);
-          },
+          onPressed: () => onUpdate,
           child: const Text('Add'),
         ),
       ],

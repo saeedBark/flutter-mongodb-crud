@@ -1,15 +1,16 @@
 import 'package:contacts_app/db/connect_mongoDb.dart';
 import 'package:mongo_dart/mongo_dart.dart';
 
-class ItemService {
+class LaboratoriesService {
   final url = ConnectMongoDB().dbUrl;
 
-    Future<Map<String, dynamic>> getItem(String id) async {
+  Future<Map<String, dynamic>> getItem(String id) async {
     try {
       final db = await Db.create(url);
       await db.open();
       final collection = db.collection('users');
-      final products = await collection.findOne({'name':id}) as Map<String,dynamic>;
+      final products =
+          await collection.findOne({'name': id}) as Map<String, dynamic>;
       await db.close();
       return products;
     } catch (e) {
@@ -17,7 +18,6 @@ class ItemService {
       return {};
     }
   }
-
 
   Future<List<Map<String, dynamic>>> getItems() async {
     try {
@@ -51,13 +51,16 @@ class ItemService {
   }
 
   Future<void> updateItem(
-      String id, String newName, String newDescription, int newQuantity) async {
+    String newName,
+    String newDescription,
+    int newQuantity,
+  ) async {
     try {
       final db = await Db.create(url);
       await db.open();
       final collection = db.collection('users');
       await collection.updateOne({
-        '_id': id
+        'name': newName
       }, {
         '\$set': {
           'name': newName,
