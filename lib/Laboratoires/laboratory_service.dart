@@ -4,7 +4,7 @@ import 'package:mongo_dart/mongo_dart.dart';
 class LaboratoriesService {
   final url = ConnectMongoDB().dbUrl;
 
-  Future<Map<String, dynamic>> getItem(String id) async {
+  Future<Map<String, dynamic>> getLaboratory(String id) async {
     try {
       final db = await Db.create(url);
       await db.open();

@@ -36,6 +36,7 @@ class AddItemDialog extends StatelessWidget {
       quantityController;
 
   final void Function()? onUpdate;
+  final void Function()? onCreate;
 
   const AddItemDialog({
     super.key,
@@ -43,6 +44,7 @@ class AddItemDialog extends StatelessWidget {
     this.descriptionController,
     this.quantityController,
     this.onUpdate,
+    this.onCreate,
   });
   @override
   Widget build(BuildContext context) {
@@ -75,7 +77,7 @@ class AddItemDialog extends StatelessWidget {
           child: const Text('Cancel'),
         ),
         ElevatedButton(
-          onPressed: () => onUpdate,
+          onPressed: onCreate,
           child: const Text('Add'),
         ),
       ],
