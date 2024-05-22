@@ -1,4 +1,4 @@
-import 'package:contacts_app/item_model.dart';
+import 'package:contacts_app/widget/item_model.dart';
 import 'package:contacts_app/Laboratoires/laboratory_service.dart';
 import 'package:flutter/material.dart';
 
@@ -13,12 +13,12 @@ class LaboratroiesController extends ChangeNotifier {
   bool isLoading = false;
 
   LaboratroiesController() {
-    getItems();
+    getLaboratories();
   }
 
-  Future<void> getItem(String id) async {
+  Future<void> getLaboratory(String id) async {
     isLoading = true;
-    final item = await _service.getItem(id);
+    final item = await _service.getLaboratory(id);
 
     nameController.text = item['name'];
     descriptionController.text = item['description'];
@@ -27,7 +27,7 @@ class LaboratroiesController extends ChangeNotifier {
     notifyListeners();
   }
 
-  Future<void> getItems() async {
+  Future<void> getLaboratories() async {
     isLoading = true;
     final items = await _service.getItems();
     allItems = items
@@ -48,8 +48,6 @@ class LaboratroiesController extends ChangeNotifier {
       isLoading = true;
       notifyListeners();
 
-      Navigator.of(context).pop();
-
       await _service.addItem(
         nameController.text,
         descriptionController.text,
@@ -62,21 +60,27 @@ class LaboratroiesController extends ChangeNotifier {
 
       // Close the dialog box
 
-      await getItems();
+      await getLaboratories();
       isLoading = false;
       notifyListeners();
-      print('Product added successfully');
+      const SnackBar(
+        content: Text('Laboratory added successfully'),
+        backgroundColor: Colors.green,
+      );
+      Navigator.of(context).pop();
     } catch (e) {
       print('Error adding product: $e');
     }
   }
 
   Future<void> updateItem(
-      String id, BuildContext context, LaboratroiesController cont) async {
+    String id,
+    BuildContext context,
+  ) async {
     try {
       await _service.updateItem(nameController.text, descriptionController.text,
           int.tryParse(quantityController.text) ?? 0);
-      await getItems().then((value) => Navigator.pop(context));
+      await getLaboratories().then((value) => Navigator.pop(context));
     } catch (e) {
       print('Error updating item: $e');
     }
@@ -85,7 +89,12 @@ class LaboratroiesController extends ChangeNotifier {
   Future<void> deleteItem(String id) async {
     try {
       await _service.deleteProduct(id);
-      allItems.removeWhere((item) => item.id == id);
+      allItems.removeWhere((item) => item.name == id);
+
+      const SnackBar(
+        content: Text('Laboratory deleted successfully'),
+        backgroundColor: Colors.amber,
+      );
 
       notifyListeners();
     } catch (e) {
