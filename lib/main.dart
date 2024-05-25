@@ -2,6 +2,7 @@ import 'package:contacts_app/Laboratoires/laboratory_controller.dart';
 import 'package:contacts_app/app.dart';
 import 'package:contacts_app/livres/livres_controller.dart';
 import 'package:flutter/material.dart';
+import 'package:mongo_dart/mongo_dart.dart';
 import 'package:provider/provider.dart';
 
 void main() {
@@ -31,18 +32,22 @@ class MyAppStock extends StatelessWidget {
 }
 
 class AddItemDialog extends StatelessWidget {
+  final ObjectId? id;
   final TextEditingController? nameController,
       descriptionController,
       quantityController;
 
   final void Function()? onUpdate;
+  final void Function()? onCreate;
 
   const AddItemDialog({
     super.key,
+    this.id,
     this.nameController,
     this.descriptionController,
     this.quantityController,
     this.onUpdate,
+    this.onCreate,
   });
   @override
   Widget build(BuildContext context) {
@@ -75,7 +80,7 @@ class AddItemDialog extends StatelessWidget {
           child: const Text('Cancel'),
         ),
         ElevatedButton(
-          onPressed: () => onUpdate,
+          onPressed: id == null ? onCreate : onUpdate,
           child: const Text('Add'),
         ),
       ],

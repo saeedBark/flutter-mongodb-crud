@@ -11,6 +11,7 @@ class LaboratoresView extends StatelessWidget {
   Widget build(BuildContext context) {
     final controller = Provider.of<LaboratroiesController>(context);
     return Scaffold(
+      appBar: AppBar(),
       body: controller.isLoading
           ? const Center(
               child: CircularProgressIndicator(),
@@ -22,11 +23,14 @@ class LaboratoresView extends StatelessWidget {
                   description: controller.allItems[index].details,
                   quantity: controller.allItems[index].qty,
                   onUpdate: () {
-                    controller.getItem(controller.allItems[index].name).then(
+                    controller
+                        .getLaboratory(controller.allItems[index].name)
+                        .then(
                           (value) => showDialog(
                             context: context,
                             builder: (BuildContext context) {
                               return AddItemDialog(
+                                id: controller.laboratoryId,
                                 nameController: controller.nameController,
                                 descriptionController:
                                     controller.descriptionController,
@@ -35,7 +39,6 @@ class LaboratoresView extends StatelessWidget {
                                 onUpdate: () => controller.updateItem(
                                   controller.allItems[index].name,
                                   context,
-                                  LaboratroiesController(),
                                 ),
                               );
                             },
@@ -51,7 +54,12 @@ class LaboratoresView extends StatelessWidget {
           showDialog(
             context: context,
             builder: (BuildContext context) {
-              return const AddItemDialog();
+              return AddItemDialog(
+                onCreate: () => controller.addProduct(context),
+                nameController: controller.nameController,
+                descriptionController: controller.descriptionController,
+                quantityController: controller.quantityController,
+              );
             },
           );
         },
