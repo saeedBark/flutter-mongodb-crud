@@ -51,6 +51,7 @@ class LaboratoriesService {
   }
 
   Future<void> updateItem(
+    ObjectId id,
     String newName,
     String newDescription,
     int newQuantity,
@@ -59,17 +60,28 @@ class LaboratoriesService {
       final db = await Db.create(url);
       await db.open();
       final collection = db.collection('users');
-      await collection.updateOne({
-        'name': newName
-      }, {
-        '\$set': {
-          'name': newName,
-          'description': newDescription,
-          'qty': newQuantity,
-        }
-      });
+
+      final result = await collection.updateOne(
+          where.eq('_id', id),
+          modify
+              .set('name', newName)
+              .set('description', newDescription)
+              .set('qty', newQuantity)
+          //  {
+          //   '\$set': {
+          //     'name': newName,
+          //     'description': newDescription,
+          //     'qty': newQuantity,
+          //   }
+          // }
+          );
+
+      if (result.isSuccess) {
+        print('Product updated successfully');
+      } else {
+        print('Product not updated successfully');
+      }
       await db.close();
-      print('Product updated successfully');
     } catch (e) {
       print('Error updating product: $e');
     }

@@ -13,8 +13,11 @@ class GestionStock extends StatelessWidget {
       ),
       body: GridView.builder(
         gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-          crossAxisCount: 3,
+          crossAxisCount: 2,
+          mainAxisSpacing: 10,
+          crossAxisSpacing: 10,
         ),
+        padding: const EdgeInsets.all(10),
         itemCount: titles.length,
         itemBuilder: (context, index) {
           final title = titles[index].entries;

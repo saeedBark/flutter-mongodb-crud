@@ -1,6 +1,7 @@
 import 'package:contacts_app/widget/item_model.dart';
 import 'package:contacts_app/Laboratoires/laboratory_service.dart';
 import 'package:flutter/material.dart';
+import 'package:mongo_dart/mongo_dart.dart';
 
 class LaboratroiesController extends ChangeNotifier {
   final LaboratoriesService _service = LaboratoriesService();
@@ -9,6 +10,7 @@ class LaboratroiesController extends ChangeNotifier {
   final TextEditingController nameController = TextEditingController();
   final TextEditingController descriptionController = TextEditingController();
   final TextEditingController quantityController = TextEditingController();
+  ObjectId laboratoryId = ObjectId();
 
   bool isLoading = false;
 
@@ -19,7 +21,7 @@ class LaboratroiesController extends ChangeNotifier {
   Future<void> getLaboratory(String id) async {
     isLoading = true;
     final item = await _service.getLaboratory(id);
-
+    laboratoryId = item['_id'];
     nameController.text = item['name'];
     descriptionController.text = item['description'];
     quantityController.text = item['qty'].toString();
@@ -78,9 +80,20 @@ class LaboratroiesController extends ChangeNotifier {
     BuildContext context,
   ) async {
     try {
-      await _service.updateItem(nameController.text, descriptionController.text,
-          int.tryParse(quantityController.text) ?? 0);
-      await getLaboratories().then((value) => Navigator.pop(context));
+      isLoading = true;
+      notifyListeners();
+
+      await _service.updateItem(
+        laboratoryId,
+        nameController.text,
+        descriptionController.text,
+        int.tryParse(quantityController.text) ?? 0,
+      );
+      await getLaboratories().then((value) {
+        isLoading = false;
+        notifyListeners();
+        Navigator.pop(context);
+      });
     } catch (e) {
       print('Error updating item: $e');
     }

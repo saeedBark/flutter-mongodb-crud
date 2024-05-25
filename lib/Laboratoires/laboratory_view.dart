@@ -30,6 +30,7 @@ class LaboratoresView extends StatelessWidget {
                             context: context,
                             builder: (BuildContext context) {
                               return AddItemDialog(
+                                id: controller.laboratoryId,
                                 nameController: controller.nameController,
                                 descriptionController:
                                     controller.descriptionController,
