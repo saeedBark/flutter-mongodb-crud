@@ -18,7 +18,7 @@ class LaboratroiesController extends ChangeNotifier {
     getLaboratories();
   }
 
-  Future<void> getLaboratory(String id) async {
+  Future<void> getLaboratory(ObjectId id) async {
     isLoading = true;
     final item = await _service.getLaboratory(id);
     laboratoryId = item['_id'];
@@ -34,7 +34,7 @@ class LaboratroiesController extends ChangeNotifier {
     final items = await _service.getItems();
     allItems = items
         .map((product) => Item(
-              id: product['_id'].toString(),
+              id: product['_id'],
               name: product['name'],
               details: product['description'],
               qty: product['qty'],
@@ -45,12 +45,12 @@ class LaboratroiesController extends ChangeNotifier {
     notifyListeners();
   }
 
-  Future<void> addProduct(BuildContext context) async {
+  Future<void> addLaboratory(BuildContext context) async {
     try {
       isLoading = true;
       notifyListeners();
 
-      await _service.addItem(
+      await _service.addLaboratroy(
         nameController.text,
         descriptionController.text,
         int.tryParse(quantityController.text) ?? 0,
@@ -60,30 +60,25 @@ class LaboratroiesController extends ChangeNotifier {
       descriptionController.clear();
       quantityController.clear();
 
-      // Close the dialog box
-
       await getLaboratories();
       isLoading = false;
-      notifyListeners();
-      const SnackBar(
-        content: Text('Laboratory added successfully'),
-        backgroundColor: Colors.green,
-      );
+
       Navigator.of(context).pop();
+      notifyListeners();
     } catch (e) {
       print('Error adding product: $e');
     }
   }
 
-  Future<void> updateItem(
-    String id,
+  Future<void> editLaboratory(
+    ObjectId id,
     BuildContext context,
   ) async {
     try {
       isLoading = true;
       notifyListeners();
 
-      await _service.updateItem(
+      await _service.editLaboratory(
         laboratoryId,
         nameController.text,
         descriptionController.text,
@@ -99,17 +94,14 @@ class LaboratroiesController extends ChangeNotifier {
     }
   }
 
-  Future<void> deleteItem(String id) async {
+  Future<void> deleteLaboratory(ObjectId id, BuildContext context) async {
     try {
-      await _service.deleteProduct(id);
-      allItems.removeWhere((item) => item.name == id);
+      await _service.deleteLabroatory(id);
+      allItems.removeWhere((item) => item.id == id);
 
-      const SnackBar(
-        content: Text('Laboratory deleted successfully'),
-        backgroundColor: Colors.amber,
-      );
-
-      notifyListeners();
+      await getLaboratories().then((value) {
+        notifyListeners();
+      });
     } catch (e) {
       print('Error deleting item: $e');
     }

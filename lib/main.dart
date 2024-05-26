@@ -6,7 +6,7 @@ import 'package:mongo_dart/mongo_dart.dart';
 import 'package:provider/provider.dart';
 
 void main() {
-  runApp(MyAppStock());
+  runApp(const MyAppStock());
 }
 
 class MyAppStock extends StatelessWidget {
@@ -31,7 +31,7 @@ class MyAppStock extends StatelessWidget {
   }
 }
 
-class AddItemDialog extends StatelessWidget {
+class ItemDialog extends StatelessWidget {
   final ObjectId? id;
   final TextEditingController? nameController,
       descriptionController,
@@ -40,7 +40,7 @@ class AddItemDialog extends StatelessWidget {
   final void Function()? onUpdate;
   final void Function()? onCreate;
 
-  const AddItemDialog({
+  const ItemDialog({
     super.key,
     this.id,
     this.nameController,
@@ -81,7 +81,7 @@ class AddItemDialog extends StatelessWidget {
         ),
         ElevatedButton(
           onPressed: id == null ? onCreate : onUpdate,
-          child: const Text('Add'),
+          child: id == null ? const Text('Add') : const Text('Edit'),
         ),
       ],
     );

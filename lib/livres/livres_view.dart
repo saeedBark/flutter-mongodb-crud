@@ -27,7 +27,7 @@ class LivresView extends StatelessWidget {
                           (value) => showDialog(
                             context: context,
                             builder: (BuildContext context) {
-                              return const AddItemDialog();
+                              return const ItemDialog();
                             },
                           ),
                         );
@@ -41,7 +41,7 @@ class LivresView extends StatelessWidget {
           showDialog(
             context: context,
             builder: (BuildContext context) {
-              return const AddItemDialog();
+              return const ItemDialog();
             },
           );
         },

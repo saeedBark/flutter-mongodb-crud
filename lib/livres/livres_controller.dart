@@ -32,7 +32,7 @@ class LivresController extends ChangeNotifier {
     final items = await _service.getItems();
     allItems = items
         .map((product) => Item(
-              id: product['_id'].toString(),
+              id: product['_id'],
               name: product['name'],
               details: product['description'],
               qty: product['qty'],

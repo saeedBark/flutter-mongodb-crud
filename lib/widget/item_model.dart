@@ -1,7 +1,9 @@
 import 'dart:convert';
 
+import 'package:mongo_dart/mongo_dart.dart';
+
 class Item {
-  String id;
+  ObjectId id;
   String name;
   int qty;
   String details;
@@ -19,7 +21,7 @@ class Item {
         details = map['descrption'];
 
   Item copyWith({
-    String? id,
+    ObjectId? id,
     String? name,
     int? qty,
     String? details,
@@ -43,7 +45,7 @@ class Item {
 
   factory Item.fromMap(Map<String, dynamic> map) {
     return Item(
-      id: map['id'] as String,
+      id: map['id'] as ObjectId,
       name: map['name'] as String,
       qty: map['qty'] as int,
       details: map['details'] as String,

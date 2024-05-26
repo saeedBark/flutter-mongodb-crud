@@ -24,20 +24,20 @@ class LaboratoresView extends StatelessWidget {
                   quantity: controller.allItems[index].qty,
                   onUpdate: () {
                     controller
-                        .getLaboratory(controller.allItems[index].name)
+                        .getLaboratory(controller.allItems[index].id)
                         .then(
                           (value) => showDialog(
                             context: context,
                             builder: (BuildContext context) {
-                              return AddItemDialog(
+                              return ItemDialog(
                                 id: controller.laboratoryId,
                                 nameController: controller.nameController,
                                 descriptionController:
                                     controller.descriptionController,
                                 quantityController:
                                     controller.quantityController,
-                                onUpdate: () => controller.updateItem(
-                                  controller.allItems[index].name,
+                                onUpdate: () => controller.editLaboratory(
+                                  controller.allItems[index].id,
                                   context,
                                 ),
                               );
@@ -46,7 +46,10 @@ class LaboratoresView extends StatelessWidget {
                         );
                   },
                   onRemove: () {
-                    controller.deleteItem(controller.allItems[index].name);
+                    controller.deleteLaboratory(
+                      controller.allItems[index].id,
+                      context,
+                    );
                   }),
             ),
       floatingActionButton: FloatingActionButton(
@@ -54,8 +57,8 @@ class LaboratoresView extends StatelessWidget {
           showDialog(
             context: context,
             builder: (BuildContext context) {
-              return AddItemDialog(
-                onCreate: () => controller.addProduct(context),
+              return ItemDialog(
+                onCreate: () => controller.addLaboratory(context),
                 nameController: controller.nameController,
                 descriptionController: controller.descriptionController,
                 quantityController: controller.quantityController,

@@ -4,13 +4,13 @@ import 'package:mongo_dart/mongo_dart.dart';
 class LaboratoriesService {
   final url = ConnectMongoDB().dbUrl;
 
-  Future<Map<String, dynamic>> getLaboratory(String id) async {
+  Future<Map<String, dynamic>> getLaboratory(ObjectId id) async {
     try {
       final db = await Db.create(url);
       await db.open();
       final collection = db.collection('users');
       final products =
-          await collection.findOne({'name': id}) as Map<String, dynamic>;
+          await collection.findOne({'_id': id}) as Map<String, dynamic>;
       await db.close();
       return products;
     } catch (e) {
@@ -33,7 +33,8 @@ class LaboratoriesService {
     }
   }
 
-  Future<void> addItem(String name, String description, int quantity) async {
+  Future<void> addLaboratroy(
+      String name, String description, int quantity) async {
     try {
       final db = await Db.create(url);
       await db.open();
@@ -50,7 +51,7 @@ class LaboratoriesService {
     }
   }
 
-  Future<void> updateItem(
+  Future<void> editLaboratory(
     ObjectId id,
     String newName,
     String newDescription,
@@ -87,14 +88,13 @@ class LaboratoriesService {
     }
   }
 
-  Future<void> deleteProduct(String id) async {
+  Future<void> deleteLabroatory(ObjectId id) async {
     try {
       final db = await Db.create(url);
       await db.open();
       final collection = db.collection('users');
 
-      // Use a colon ':' to associate the key '_id' with its value 'objectId'
-      await collection.deleteOne({'name': id});
+      await collection.deleteOne({'_id': id});
       await db.close();
       print('Product deleted successfully');
     } catch (e) {
