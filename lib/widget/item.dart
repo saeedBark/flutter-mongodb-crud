@@ -31,11 +31,12 @@ class ItemCard extends StatelessWidget {
           children: [
             IconButton(
               icon: const Icon(Icons.edit),
-              onPressed: () =>onUpdate(),
+              onPressed: () => onUpdate(),
             ),
             IconButton(
               icon: const Icon(Icons.delete),
-              onPressed:()=> onRemove(),
+              color: Colors.red,
+              onPressed: () => onRemove(),
             ),
           ],
         ),

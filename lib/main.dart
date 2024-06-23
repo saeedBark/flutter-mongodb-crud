@@ -52,7 +52,7 @@ class ItemDialog extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
-      title: const Text('Add New Item'),
+      title: id == null ? const Text('Add New Item') : const Text('Edit Item'),
       content: Column(
         mainAxisSize: MainAxisSize.min,
         children: [

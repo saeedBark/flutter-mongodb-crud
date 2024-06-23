@@ -48,6 +48,7 @@ class LaboratroiesController extends ChangeNotifier {
   Future<void> addLaboratory(BuildContext context) async {
     try {
       isLoading = true;
+
       notifyListeners();
 
       await _service.addLaboratroy(
