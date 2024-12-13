@@ -23,11 +23,11 @@ class LivresView extends StatelessWidget {
                   description: controller.allItems[index].details,
                   quantity: controller.allItems[index].qty,
                   onUpdate: () {
-                    controller.getItem(controller.allItems[index].name).then(
+                    controller.getLivre(controller.allItems[index].name).then(
                           (value) => showDialog(
                             context: context,
                             builder: (BuildContext context) {
-                              return const AddItemDialog();
+                              return const ItemDialog();
                             },
                           ),
                         );
@@ -41,7 +41,7 @@ class LivresView extends StatelessWidget {
           showDialog(
             context: context,
             builder: (BuildContext context) {
-              return AddItemDialog();
+              return const ItemDialog();
             },
           );
         },

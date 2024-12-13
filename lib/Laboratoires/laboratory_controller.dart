@@ -1,6 +1,7 @@
-import 'package:contacts_app/item_model.dart';
+import 'package:contacts_app/widget/item_model.dart';
 import 'package:contacts_app/Laboratoires/laboratory_service.dart';
 import 'package:flutter/material.dart';
+import 'package:mongo_dart/mongo_dart.dart';
 
 class LaboratroiesController extends ChangeNotifier {
   final LaboratoriesService _service = LaboratoriesService();
@@ -9,17 +10,18 @@ class LaboratroiesController extends ChangeNotifier {
   final TextEditingController nameController = TextEditingController();
   final TextEditingController descriptionController = TextEditingController();
   final TextEditingController quantityController = TextEditingController();
+  ObjectId laboratoryId = ObjectId();
 
   bool isLoading = false;
 
   LaboratroiesController() {
-    getItems();
+    getLaboratories();
   }
 
-  Future<void> getItem(String id) async {
+  Future<void> getLaboratory(ObjectId id) async {
     isLoading = true;
-    final item = await _service.getItem(id);
-
+    final item = await _service.getLaboratory(id);
+    laboratoryId = item['_id'];
     nameController.text = item['name'];
     descriptionController.text = item['description'];
     quantityController.text = item['qty'].toString();
@@ -27,12 +29,12 @@ class LaboratroiesController extends ChangeNotifier {
     notifyListeners();
   }
 
-  Future<void> getItems() async {
+  Future<void> getLaboratories() async {
     isLoading = true;
     final items = await _service.getItems();
     allItems = items
         .map((product) => Item(
-              id: product['_id'].toString(),
+              id: product['_id'],
               name: product['name'],
               details: product['description'],
               qty: product['qty'],
@@ -43,14 +45,13 @@ class LaboratroiesController extends ChangeNotifier {
     notifyListeners();
   }
 
-  Future<void> addProduct(BuildContext context) async {
+  Future<void> addLaboratory(BuildContext context) async {
     try {
       isLoading = true;
+
       notifyListeners();
 
-      Navigator.of(context).pop();
-
-      await _service.addItem(
+      await _service.addLaboratroy(
         nameController.text,
         descriptionController.text,
         int.tryParse(quantityController.text) ?? 0,
@@ -60,34 +61,48 @@ class LaboratroiesController extends ChangeNotifier {
       descriptionController.clear();
       quantityController.clear();
 
-      // Close the dialog box
-
-      await getItems();
+      await getLaboratories();
       isLoading = false;
+
+      Navigator.of(context).pop();
       notifyListeners();
-      print('Product added successfully');
     } catch (e) {
       print('Error adding product: $e');
     }
   }
 
-  Future<void> updateItem(
-      String id, BuildContext context, LaboratroiesController cont) async {
+  Future<void> editLaboratory(
+    ObjectId id,
+    BuildContext context,
+  ) async {
     try {
-      await _service.updateItem(nameController.text, descriptionController.text,
-          int.tryParse(quantityController.text) ?? 0);
-      await getItems().then((value) => Navigator.pop(context));
+      isLoading = true;
+      notifyListeners();
+
+      await _service.editLaboratory(
+        laboratoryId,
+        nameController.text,
+        descriptionController.text,
+        int.tryParse(quantityController.text) ?? 0,
+      );
+      await getLaboratories().then((value) {
+        isLoading = false;
+        notifyListeners();
+        Navigator.pop(context);
+      });
     } catch (e) {
       print('Error updating item: $e');
     }
   }
 
-  Future<void> deleteItem(String id) async {
+  Future<void> deleteLaboratory(ObjectId id, BuildContext context) async {
     try {
-      await _service.deleteProduct(id);
+      await _service.deleteLabroatory(id);
       allItems.removeWhere((item) => item.id == id);
 
-      notifyListeners();
+      await getLaboratories().then((value) {
+        notifyListeners();
+      });
     } catch (e) {
       print('Error deleting item: $e');
     }

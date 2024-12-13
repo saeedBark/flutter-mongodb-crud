@@ -1,4 +1,4 @@
-import 'package:contacts_app/item_model.dart';
+import 'package:contacts_app/widget/item_model.dart';
 import 'package:contacts_app/livres/livres_service.dart';
 import 'package:flutter/material.dart';
 
@@ -13,12 +13,12 @@ class LivresController extends ChangeNotifier {
   bool isLoading = false;
 
   LivresController() {
-    getItems();
+    getLivres();
   }
 
-  Future<void> getItem(String id) async {
+  Future<void> getLivre(String id) async {
     isLoading = true;
-    final item = await _service.getItem(id);
+    final item = await _service.getLivre(id);
 
     nameController.text = item['name'];
     descriptionController.text = item['description'];
@@ -27,12 +27,12 @@ class LivresController extends ChangeNotifier {
     notifyListeners();
   }
 
-  Future<void> getItems() async {
+  Future<void> getLivres() async {
     isLoading = true;
     final items = await _service.getItems();
     allItems = items
         .map((product) => Item(
-              id: product['_id'].toString(),
+              id: product['_id'],
               name: product['name'],
               details: product['description'],
               qty: product['qty'],
@@ -62,7 +62,7 @@ class LivresController extends ChangeNotifier {
 
       // Close the dialog box
 
-      await getItems();
+      await getLivres();
       isLoading = false;
       notifyListeners();
       print('Product added successfully');
@@ -76,7 +76,7 @@ class LivresController extends ChangeNotifier {
     try {
       await _service.updateItem(nameController.text, descriptionController.text,
           int.tryParse(quantityController.text) ?? 0);
-      await getItems().then((value) => Navigator.pop(context));
+      await getLivres().then((value) => Navigator.pop(context));
     } catch (e) {
       print('Error updating item: $e');
     }

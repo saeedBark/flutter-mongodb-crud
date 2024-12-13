@@ -2,10 +2,11 @@ import 'package:contacts_app/Laboratoires/laboratory_controller.dart';
 import 'package:contacts_app/app.dart';
 import 'package:contacts_app/livres/livres_controller.dart';
 import 'package:flutter/material.dart';
+import 'package:mongo_dart/mongo_dart.dart';
 import 'package:provider/provider.dart';
 
 void main() {
-  runApp(MyAppStock());
+  runApp(const MyAppStock());
 }
 
 class MyAppStock extends StatelessWidget {
@@ -30,24 +31,28 @@ class MyAppStock extends StatelessWidget {
   }
 }
 
-class AddItemDialog extends StatelessWidget {
+class ItemDialog extends StatelessWidget {
+  final ObjectId? id;
   final TextEditingController? nameController,
       descriptionController,
       quantityController;
 
   final void Function()? onUpdate;
+  final void Function()? onCreate;
 
-  const AddItemDialog({
+  const ItemDialog({
     super.key,
+    this.id,
     this.nameController,
     this.descriptionController,
     this.quantityController,
     this.onUpdate,
+    this.onCreate,
   });
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
-      title: const Text('Add New Item'),
+      title: id == null ? const Text('Add New Item') : const Text('Edit Item'),
       content: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
@@ -75,8 +80,8 @@ class AddItemDialog extends StatelessWidget {
           child: const Text('Cancel'),
         ),
         ElevatedButton(
-          onPressed: () => onUpdate,
-          child: const Text('Add'),
+          onPressed: id == null ? onCreate : onUpdate,
+          child: id == null ? const Text('Add') : const Text('Edit'),
         ),
       ],
     );
